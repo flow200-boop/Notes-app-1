@@ -12,13 +12,24 @@ if not os.path.exists(NOTES_FILE):
         json.dump([], f)
 
 class NotesHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        super().end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.end_headers()
+
     def do_GET(self):
         if self.path == '/api/notes':
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             with open(NOTES_FILE, 'r') as f:
-                self.wfile.write(f.read().encode())
+                self.wfile.write(f.read().encode('utf-8'))
         else:
             return super().do_GET()
 
@@ -34,7 +45,7 @@ class NotesHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({"status": "success"}).encode())
+            self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
