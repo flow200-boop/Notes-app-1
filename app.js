@@ -37,9 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (notes.length === 0) {
             notesGrid.innerHTML = `
                 <div class="empty-state">
-                    <i class="fas fa-meteor"></i>
-                    <h2>Space is empty</h2>
-                    <p>Create your first note to fill the void.</p>
+                    <i class="fas fa-feather"></i>
+                    <p>It's quiet here. Create a note to get started.</p>
                 </div>
             `;
             return;
@@ -48,15 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sort notes by date descending
         const sortedNotes = [...notes].sort((a, b) => b.timestamp - a.timestamp);
 
+        // Palette colors
+        const colors = ['#99CDD8', '#DAEBE3', '#FDE8D3', '#F3C3B2', '#CFD6C4'];
+
         sortedNotes.forEach((note, index) => {
             const noteEl = document.createElement('div');
             noteEl.className = 'note-card';
+            
+            // Assign a color based on the id so it stays consistent
+            const colorIndex = note.id ? note.id.charCodeAt(0) % colors.length : index % colors.length;
+            noteEl.style.backgroundColor = colors[colorIndex];
             noteEl.style.animationDelay = `${index * 0.05}s`;
             
             const date = new Date(note.timestamp).toLocaleDateString('en-US', {
                 month: 'short',
-                day: 'numeric',
-                year: 'numeric'
+                day: 'numeric'
             });
 
             noteEl.innerHTML = `
@@ -67,8 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="note-footer">
                     <span class="note-date">${date}</span>
                     <div class="note-actions">
-                        <button class="icon-btn edit-btn" title="Edit Note"><i class="fas fa-pen"></i></button>
-                        <button class="icon-btn danger delete-btn" title="Delete Note"><i class="fas fa-trash"></i></button>
+                        <button class="icon-btn edit-btn" title="Edit"><i class="fas fa-pen"></i></button>
+                        <button class="icon-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `;
@@ -162,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function deleteNote(id) {
-        if (confirm('Are you sure you want to delete this note? It will be lost in the void.')) {
+        if (confirm('Are you sure you want to delete this note?')) {
             notes = notes.filter(n => n.id !== id);
             saveToLocalStorage();
             renderNotes();
