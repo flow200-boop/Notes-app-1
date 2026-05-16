@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // DOM Elements
     const notesGrid = document.getElementById('notes-grid');
     const addNoteBtn = document.getElementById('add-note-btn');
@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const noteIdInput = document.getElementById('note-id-input');
 
     // State
-    let notes = JSON.parse(localStorage.getItem('nebula-notes')) || [];
+    let notes = [];
 
     // Initialize App
-    renderNotes();
+    await fetchNotes();
 
     // Event Listeners
     addNoteBtn.addEventListener('click', () => openModal());
@@ -31,6 +31,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Functions
+    async function fetchNotes() {
+        try {
+            const response = await fetch('/api/notes');
+            if (response.ok) {
+                notes = await response.json();
+                renderNotes();
+            }
+        } catch (error) {
+            console.error('Error fetching notes:', error);
+            // Fallback to empty if server isn't running
+            renderNotes();
+        }
+    }
+
+    async function saveToServer() {
+        try {
+            await fetch('/api/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(notes)
+            });
+        } catch (error) {
+            console.error('Error saving notes:', error);
+            alert('Failed to save notes to the server. Make sure server.py is running!');
+        }
+    }
+
     function renderNotes() {
         notesGrid.innerHTML = '';
 
@@ -95,9 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 openModal(note);
             });
 
-            deleteBtn.addEventListener('click', (e) => {
+            deleteBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                deleteNote(note.id);
+                await deleteNote(note.id);
             });
 
             notesGrid.appendChild(noteEl);
@@ -128,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         noteModal.classList.remove('active');
     }
 
-    function saveNote() {
+    async function saveNote() {
         const title = noteTitleInput.value.trim();
         const content = noteContentInput.value.trim();
         const id = noteIdInput.value;
@@ -161,21 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
             notes.push(newNote);
         }
 
-        saveToLocalStorage();
-        renderNotes();
+        renderNotes(); // update UI immediately
         closeModal();
+        await saveToServer();
     }
 
-    function deleteNote(id) {
+    async function deleteNote(id) {
         if (confirm('Are you sure you want to delete this note?')) {
             notes = notes.filter(n => n.id !== id);
-            saveToLocalStorage();
             renderNotes();
+            await saveToServer();
         }
-    }
-
-    function saveToLocalStorage() {
-        localStorage.setItem('nebula-notes', JSON.stringify(notes));
     }
 
     function generateId() {
