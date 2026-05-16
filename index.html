@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-mesh">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="app-container">
+        <header>
+            <div class="header-content">
+                <h1>Nebula Notes</h1>
+                <p>Capture your thoughts in the cosmos</p>
+            </div>
+            <button id="add-note-btn" class="glass-btn primary">
+                <i class="fas fa-plus"></i> New Note
+            </button>
+        </header>
+
+        <section class="notes-grid" id="notes-grid">
+            <!-- Notes will be injected here -->
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="note-modal">
+        <div class="glass-modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Note</h2>
+                <button class="icon-btn" id="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="note-title-input" placeholder="Note Title" autocomplete="off">
+                <textarea id="note-content-input" placeholder="Start typing your note here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="glass-btn secondary" id="cancel-note">Cancel</button>
+                <button class="glass-btn primary" id="save-note">Save Note</button>
+            </div>
+            <input type="hidden" id="note-id-input">
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
