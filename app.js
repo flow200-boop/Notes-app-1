@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Functions
     async function fetchNotes() {
         try {
-            const response = await fetch('/api/notes');
+            const response = await fetch('http://localhost:8000/api/notes');
             if (response.ok) {
                 notes = await response.json();
                 renderNotes();
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function saveToServer() {
         try {
-            await fetch('/api/notes', {
+            await fetch('http://localhost:8000/api/notes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
