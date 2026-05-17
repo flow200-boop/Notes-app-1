@@ -4,7 +4,8 @@ import json
 import os
 
 PORT = 8000
-NOTES_FILE = 'notes.json'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+NOTES_FILE = os.path.join(BASE_DIR, 'notes.json')
 
 # Ensure notes.json exists
 if not os.path.exists(NOTES_FILE):
